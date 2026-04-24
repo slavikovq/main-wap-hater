@@ -1,4 +1,5 @@
 const Class = require("../models/classes");
+const Student = require("../models/students");
 
 exports.getAllClasses = async (req, res) => {
   try {
@@ -85,6 +86,23 @@ exports.createClass = async (req, res) => {
     res.status(500).send({
       msg: "Class was not created",
     });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+exports.getAllStudentNamesInClass = async (req, res) => {
+  try {
+    const result = await Student.find({ grade: {
+      _id: req.params.id
+    } }).select("name");
+    if (result) {
+      return res.status(200).send({
+        msg: "Students found",
+        payload: result,
+      });
+    }
+    res.status(404).send({ msg: "Students not found" });
   } catch (error) {
     res.status(500).send(error);
   }

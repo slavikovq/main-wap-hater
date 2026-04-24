@@ -10,10 +10,14 @@ router.get("/", classesController.getAllClasses);
 
 router.get("/:id", classesController.getClassById);
 
+router.get("/students/:id", classesController.getAllStudentNamesInClass);
+
 router.delete("/:id", classesController.deleteClass);
 
 router.put("/:id", classesController.updateClass);
 
 router.post("/", classesController.createClass);
+
+
 
 module.exports = router;

@@ -16,6 +16,8 @@ router.put("/:id", teachersController.updateTeacher);
 
 router.post("/", teachersController.createTeacher);
 
-router.post("/assign-subject", teachersController.assignSubjectToTeacher)
+router.get("/:teacherId/subjects", teachersController.getAllSubjectNamesByTeacherId);
+
+router.get("/subject/:subjectId", teachersController.getTeachersNamesBySubjectId);
 
 module.exports = router;

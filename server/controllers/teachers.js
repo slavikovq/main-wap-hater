@@ -95,25 +95,50 @@ exports.createTeacher = async (req, res) => {
   }
 };
 
-exports.assignSubjectToTeacher = async (req, res) => {
+exports.getAllSubjectNamesByTeacherId = async (req, res) => {
   try {
-    const { teacherId, subjectId } = req.body;
+    const { teacherId } = req.params;
 
-    const result = await Teacher.findByIdAndUpdate(
-      teacherId,
-      { $addToSet: { subjects: subjectId } },
-      { new: true }
-    ).populate("subjects");
+    const teacher = await Teacher.findById(teacherId).populate("subjects");
 
-    if (result) {
-      return res.status(200).send({
-        msg: "Subject assigned to teacher",
-        payload: result,
-      });
+    if (!teacher) {
+      return res.status(404).send({ msg: "Teacher not found" });
     }
 
-    res.status(404).send({ msg: "Teacher not found" });
+    if (!teacher.subjects || teacher.subjects.length === 0) {
+      return res.status(404).send({ msg: "This teacher has no subjects" });
+    }
+
+    const subjectNames = teacher.subjects.map(s => s.name);
+
+    return res.status(200).send({
+      msg: "Subject names retrieved successfully",
+      payload: subjectNames
+    });
+
   } catch (error) {
-    res.status(500).send(error);
+    return res.status(500).send(error.message);
+  }
+};
+
+exports.getTeachersNamesBySubjectId = async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+
+    const teachers = await Teacher.find({ subjects: subjectId });
+
+    if (!teachers || teachers.length === 0) {
+      return res.status(404).send({ msg: "No teachers found for this subject" });
+    }
+
+    const teacherNames = teachers.map(t => t.name);
+
+    return res.status(200).send({
+      msg: "Teacher names retrieved successfully",
+      payload: teacherNames
+    });
+
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 };

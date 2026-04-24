@@ -2,7 +2,7 @@ const Student = require("../models/students");
 
 exports.getAllStudents = async (req, res) => {
   try {
-    const result = await Student.find().populate("classId");
+    const result = await Student.find().populate("grade");
     if (result && result.length !== 0) {
       return res.status(200).send({
         msg: "Students found!",
@@ -17,7 +17,7 @@ exports.getAllStudents = async (req, res) => {
 
 exports.getStudentById = async (req, res) => {
   try {
-    const result = await Student.findById(req.params.id).populate("classId");
+    const result = await Student.findById(req.params.id).populate("grade");
     if (result) {
       return res.status(200).send({
         msg: "Student found",
@@ -50,11 +50,11 @@ exports.updateStudent = async (req, res) => {
       name: req.body.name,
       age: req.body.age,
       average: req.body.average,
-      classId: req.body.classId,
+      grade: req.body.grade,
     };
     const result = await Student.findByIdAndUpdate(req.params.id, data, {
       new: true,
-    }).populate("classId");
+    }).populate("grade");
     if (result) {
       return res.status(200).send({
         msg: "Student updated",
@@ -75,11 +75,11 @@ exports.createStudent = async (req, res) => {
       name: req.body.name,
       age: req.body.age,
       average: req.body.average,
-      classId: req.body.classId,
+      grade: req.body.grade,
     });
     const result = await data.save();
     const populatedResult = await Student.findById(result._id).populate(
-      "classId"
+      "grade"
     );
     if (result) {
       return res.status(201).send({
